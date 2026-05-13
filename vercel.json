@@ -1,0 +1,9 @@
+
+{
+  "framework": "vite",
+  "installCommand": "npm install --no-package-lock",
+  "rewrites": [
+    { "source": "/api/register", "destination": "/api/register" },
+    { "source": "/api/register/(.*)", "destination": "/api/register" }
+  ]
+}

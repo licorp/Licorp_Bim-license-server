@@ -1,0 +1,5 @@
+{
+  "name": "BIM Tool License Manager",
+  "description": "Bảng điều khiển toàn diện để quản lý giấy phép công cụ BIM Tool, quyền truy cập người dùng và giám sát các phiên đăng nhập đang hoạt động với thông tin chi tiết được hỗ trợ bởi AI.",
+  "requestFramePermissions": []
+}
