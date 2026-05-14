@@ -1,14 +1,13 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy package files
+# Copy package.json only (NOT package-lock.json which has Windows-specific resolutions)
 COPY package.json ./
 
-# Cài tất cả dependencies (bỏ package-lock.json để tránh lỗi Windows-specific packages)
-# npm install sẽ tự resolve đúng platform (linux/x64)
-RUN npm install --ignore-scripts
+# Install all dependencies - npm will resolve correct Linux platform packages
+RUN npm install
 
-# Copy toàn bộ source
+# Copy full source code
 COPY . .
 
 # Build frontend (React/Vite)
@@ -18,14 +17,14 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Cài tsx globally
+# Install tsx globally to run TypeScript
 RUN npm install -g tsx
 
-# Chỉ copy và cài production dependencies
+# Copy package.json and install only production deps
 COPY package.json ./
-RUN npm install --omit=dev --ignore-scripts
+RUN npm install --omit=dev
 
-# Copy build artifacts
+# Copy build output and server files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server.ts ./server.ts
 COPY --from=builder /app/tsconfig.json ./tsconfig.json
@@ -34,8 +33,8 @@ COPY --from=builder /app/api ./api
 EXPOSE 3000
 ENV NODE_ENV=production
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
   CMD wget -qO- http://localhost:3000/health || exit 1
 
 CMD ["tsx", "server.ts"]
