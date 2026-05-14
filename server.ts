@@ -635,6 +635,20 @@ app.all("/api/action", (_req: express.Request, res: express.Response) => {
   return apiError(res, 410, "API_LEGACY_DEPRECATED", "Legacy action API deprecated. Use /api/v1/auth/* and /api/v1/admin/* endpoints.");
 });
 
+// --- HEALTH CHECK (Railway / Docker) ---
+app.get("/health", (_req: express.Request, res: express.Response) => {
+  const dbState = mongoose.connection.readyState;
+  // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+  const dbStatus = dbState === 1 ? "connected" : dbState === 2 ? "connecting" : "disconnected";
+  const isHealthy = dbState === 1;
+  return res.status(isHealthy ? 200 : 503).json({
+    status: isHealthy ? "ok" : "degraded",
+    db: dbStatus,
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
+  });
+});
+
 async function startServer() {
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

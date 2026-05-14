@@ -1,8 +1,10 @@
 node_modules/
 dist/
 .env
-*.env.local
-*.env.production
-.DS_Store
+.env.*
+!.env.example
 *.log
 npm-debug.log*
+.DS_Store
+Thumbs.db
+tmp_test_auth.ps1

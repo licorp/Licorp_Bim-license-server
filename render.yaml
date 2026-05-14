@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: bim-license-server
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: ADMIN_SECRET_KEY
+        sync: false
+      - key: VITE_ADMIN_USER
+        sync: false
+      - key: VITE_ADMIN_PASS
+        sync: false
+      - key: VITE_ADMIN_KEY
+        sync: false
+    healthCheckPath: /health
+    autoDeploy: true
