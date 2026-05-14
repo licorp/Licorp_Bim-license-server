@@ -2,7 +2,6 @@
 
 import express from "express";
 import mongoose from "mongoose";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import crypto from "crypto";
 
@@ -650,8 +649,9 @@ app.get("/health", (_req: express.Request, res: express.Response) => {
 });
 
 async function startServer() {
-  // Vite middleware for development
+  // Vite middleware for development only (dynamic import to avoid production error)
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -671,4 +671,3 @@ async function startServer() {
 }
 
 startServer();
-
